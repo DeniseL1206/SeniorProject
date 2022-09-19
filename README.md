@@ -1,16 +1,3 @@
-# seniorprojectdemo
+# SeniorProject
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To ensure the general well being of UTRGV students, this project will center around campus safety by allowing students to report and discuss safety issues experienced on and around campus, with such instances including harassment, assault, and other crime. The application is intended to provide a platform to UTRGV students to spread awareness of campus safety resources thereby creating a community of students that is aware of their surroundings and potentially reducing safety concerns on and around campus. We hope to address these issues by offering a reporting system, a rating system of safe and unsafe areas on campus, a Reddit-like platform for interaction, and the possible integration of a recommendation system. This application serves as a mobile application implemented through the open-source framework Flutter and the Dart programming language.
