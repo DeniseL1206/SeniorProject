@@ -1,5 +1,9 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
+import 'package:seniorproject/main.dart';
 import 'dart:async';
+import 'home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -7,6 +11,9 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  TextEditingController textController = TextEditingController();
+  String emailValidator = "@utrgv.edu";
+  bool emailHandle = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,26 +24,36 @@ class _SignInScreenState extends State<SignInScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            // ignore: prefer_const_constructors
             Padding(
               padding: const EdgeInsets.only(top: 60.0),
-              child: Center(
-                child: Container(
-                    width: 200,
-                    height: 150,
-                    /*decoration: BoxDecoration(
+              //child: Center(
+              //child: Container(
+              //  width: 200,
+              //height: 150,
+              /*decoration: BoxDecoration(
                         color: Colors.red,
                         borderRadius: BorderRadius.circular(50.0)),*/
-                    child: Image.asset('asset/images/flutter-logo.png')),
-              ),
+              // child: Image.asset('asset/images/flutter-logo.png')),
+              // ),
             ),
             Padding(
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                onChanged: (inputValue) {
+                  if (inputValue.isEmpty ||
+                      inputValue.contains(emailValidator)) {
+                    setValidator(true);
+                  } else {
+                    setValidator(false);
+                  }
+                },
                 decoration: InputDecoration(
+                   errorText: emailHandle ? null : "Please enter a valid utrgv email",
                     border: OutlineInputBorder(),
                     labelText: 'Email',
-                    hintText: 'Enter valid email id as abc@gmail.com'),
+                    hintText: 'Enter valid email id ending in @utrgv.edu'),
               ),
             ),
             Padding(
@@ -65,14 +82,15 @@ class _SignInScreenState extends State<SignInScreen> {
               width: 250,
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
-              child: FlatButton(
-                onPressed: () {
-//                  Navigator.push(
-                  // context, MaterialPageRoute(builder: (_) => HomePage()));
+              child: ElevatedButton(
+                onPressed:  () { 
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => BottomNavBar()));
                 },
                 child: Text(
                   'Login',
                   style: TextStyle(color: Colors.white, fontSize: 25),
+                  key: Key("login-button"),
                 ),
               ),
             ),
@@ -85,4 +103,11 @@ class _SignInScreenState extends State<SignInScreen> {
       ),
     );
   }
+
+  void setValidator(valid){
+      setState(() {
+        emailHandle = valid;
+      });
+    }
+
 }
