@@ -66,6 +66,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
         body: _children[_currentIndex],
         bottomNavigationBar: BottomNavigationBar(
+          key: Key('navigation-bar'),
           onTap: onTappedBar,
           currentIndex: _currentIndex,
           items: [

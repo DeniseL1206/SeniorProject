@@ -11,15 +11,37 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController textController = TextEditingController();
+  final myController = TextEditingController();
+  bool submit = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    myController.addListener(() {
+      setState(() {
+        submit = myController.text.isNotEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
+  //TextEditingController textController = TextEditingController();
   String emailValidator = "@utrgv.edu";
   bool emailHandle = true;
+  bool button = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Login Page"),
+        key: Key("title"),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -41,16 +63,23 @@ class _SignInScreenState extends State<SignInScreen> {
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                key: Key("email-input"),
+                controller: myController,
                 onChanged: (inputValue) {
-                  if (inputValue.isEmpty ||
-                      inputValue.contains(emailValidator)) {
-                    setValidator(true);
+                  if (inputValue.isEmpty) {
+                    button = true;
+                    //setValidator(true);
                   } else {
                     setValidator(false);
+                    button = false;
+                  }
+                  if (inputValue.contains(emailValidator)) {
+                    setValidator(true);
                   }
                 },
                 decoration: InputDecoration(
-                   errorText: emailHandle ? null : "Please enter a valid utrgv email",
+                    errorText:
+                        emailHandle ? null : "Please enter a valid utrgv email",
                     border: OutlineInputBorder(),
                     labelText: 'Email',
                     hintText: 'Enter valid email id ending in @utrgv.edu'),
@@ -61,6 +90,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                key: Key("password-input"),
                 obscureText: true,
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -69,6 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             TextButton(
+              key: Key("forgot-password"),
               onPressed: () {
                 //TODO FORGOT PASSWORD SCREEN GOES HERE
               },
@@ -83,31 +114,33 @@ class _SignInScreenState extends State<SignInScreen> {
               decoration: BoxDecoration(
                   color: Colors.blue, borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton(
-                onPressed:  () { 
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => BottomNavBar()));
-                },
+                onPressed: submit && emailHandle
+                    ? () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => BottomNavBar()));
+                      }
+                    : null,
+                    key: Key("login-button"),
                 child: Text(
                   'Login',
                   style: TextStyle(color: Colors.white, fontSize: 25),
-                  key: Key("login-button"),
                 ),
               ),
             ),
             SizedBox(
               height: 130,
             ),
-            Text('New User? Create Account')
+            Text('New User? Create Account',
+            key: Key('new-user')),
           ],
         ),
       ),
     );
   }
 
-  void setValidator(valid){
-      setState(() {
-        emailHandle = valid;
-      });
-    }
-
+  void setValidator(valid) {
+    setState(() {
+      emailHandle = valid;
+    });
+  }
 }

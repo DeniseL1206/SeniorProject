@@ -13,7 +13,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text("Home Screen"),
+           automaticallyImplyLeading: false,
+            title: IconButton(
+                key: Key("back-button"),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+                icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
+            backgroundColor: Colors.blue,
+            elevation: 0,
         ),
         body: Center(
             child: Column(
@@ -23,7 +33,10 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 130,
             ),
-            Text('This is the Home Screen')
+            Text('This is the Home Screen',
+            key: Key("home-text")), 
+            
+            
           ],
         )));
   }

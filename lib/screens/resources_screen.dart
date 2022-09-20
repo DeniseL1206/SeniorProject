@@ -15,7 +15,17 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("Resources Screen"),
+        automaticallyImplyLeading: false,
+            title: IconButton(
+                key: Key("back-button"),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+                icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
+            backgroundColor: Colors.blue,
+            elevation: 0,
       ),
       body: Center(
         child: Column(
@@ -25,7 +35,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
             SizedBox(
           height: 130,
         ),
-        Text('This is the Resources Screen')
+        Text('This is the Resources Screen',  key: Key("resources-text"))
           ],)
       )
         
