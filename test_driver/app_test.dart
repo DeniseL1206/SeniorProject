@@ -85,9 +85,39 @@ void main() {
 
         await driver.waitFor(find.byValueKey('navigation-bar'));
         await driver.tap(find.text('Resources'));
-        final resources_text = find.byValueKey("resources-text");
-        expect(await driver.getText(resources_text),
-            "This is the Resources Screen");
+        // final resources_text = find.byValueKey("resources-text");
+        // expect(await driver.getText(resources_text),
+        //   "This is the Resources Screen");
+      });
+      group('Resources', () {
+        /*
+    Given I am on the Resources Screen
+    And I see two icon tabs
+    When I tap the school icon
+    Then I should see a list of campus resources
+    */
+        test(
+            "Clicking the school icon should direct the user to the campus resources tab",
+            () async {
+          final schoolResources = find.byValueKey("school-icon");
+          await driver.tap(schoolResources);
+          await driver.waitFor(find.text('Dean of Students'));
+        });
+
+        /*
+    Given I am on the Resources Screen
+    And I see two icon tabs
+    When I tap the arrow icon
+    Then I should see a list of external resources
+    */
+        test(
+            "Clicking the external icon should direct the user to the external resources tab",
+            () async {
+          final externalResources = find.byValueKey("external-icon");
+          await driver.tap(externalResources);
+          await driver
+              .waitFor(find.text('National Suicide Prevention Hotline'));
+        });
       });
     },
   );
