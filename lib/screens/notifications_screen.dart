@@ -10,19 +10,13 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
+       backgroundColor: Colors.white,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-            title: IconButton(
-                key: Key("back-button"),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-                icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
-            backgroundColor: Colors.blue,
-            elevation: 0,
+          centerTitle: true,
+          title: Text('Notifications'),
+          backgroundColor: Color(0xFFFF9E80),
+          elevation: 0,
         ),
         body: Center(
             child: Column(

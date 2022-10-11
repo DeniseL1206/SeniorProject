@@ -45,7 +45,7 @@ void main() {
         await driver.tap(login_button);
 
         final title_text = find.byValueKey("home-text");
-        expect(await driver.getText(title_text), "This is the Home Screen");
+        expect(await driver.getText(title_text), "Home");
       });
       /*
       Given I am on the Home Screen
@@ -63,7 +63,7 @@ void main() {
           "Clicking a button on the navigation bar should direct the user to the appropriate screen",
           () async {
         final home_text = find.byValueKey("home-text");
-        expect(await driver.getText(home_text), "This is the Home Screen");
+        expect(await driver.getText(home_text), "Home");
 
         await driver.waitFor(find.byValueKey('navigation-bar'));
         await driver.tap(find.text('Explorer'));
@@ -163,24 +163,24 @@ void main() {
     });
   });
 
-  group('Back Buttons', () {
-    test(
-        "Back button on any screen should take the user back to the login screen",
-        () async {
-      final email_textfield = find.byValueKey("email-input");
-      await driver.tap(email_textfield);
-      await driver.enterText('goob@utrgv.edu');
-      await driver.waitFor(find.text('goob@utrgv.edu'));
+  // group('Back Buttons', () {
+  //   test(
+  //       "Back button on any screen should take the user back to the login screen",
+  //       () async {
+  //     final email_textfield = find.byValueKey("email-input");
+  //     await driver.tap(email_textfield);
+  //     await driver.enterText('goob@utrgv.edu');
+  //     await driver.waitFor(find.text('goob@utrgv.edu'));
 
-      final login_button = find.byValueKey("login-button");
-      await driver.tap(login_button);
+  //     final login_button = find.byValueKey("login-button");
+  //     await driver.tap(login_button);
 
-      final back_button = find.byValueKey("back-button");
-      await driver.tap(back_button);
+  //     final back_button = find.byValueKey("back-button");
+  //     await driver.tap(back_button);
 
-      final login_text = find.byValueKey("new-user");
+  //     final login_text = find.byValueKey("new-user");
 
-      expect(await driver.getText(login_text), "New User? Create Account");
-    });
-  });
+  //     expect(await driver.getText(login_text), "New User? Create Account");
+  //   });
+  // });
 }

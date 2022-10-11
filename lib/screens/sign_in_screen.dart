@@ -40,8 +40,12 @@ class _SignInScreenState extends State<SignInScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text("Login Page"),
         key: Key("title"),
+        backgroundColor: Color(0xFFFF9E80),
+        elevation: 0,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -81,8 +85,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     errorText:
                         emailHandle ? null : "Please enter a valid utrgv email",
                     border: OutlineInputBorder(),
-                    labelText: 'Email',
-                    hintText: 'Enter valid email id ending in @utrgv.edu'),
+                    labelText: 'Email', 
+                    hintText: 'Enter valid email id ending in @utrgv.edu',
+                    hoverColor: Color(0xFFFF9E80),
+                    focusColor: Color(0xFFFF9E80),
+                    fillColor: Color(0xFFFF9E80),),
               ),
             ),
             Padding(
@@ -95,7 +102,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
-                    hintText: 'Enter secure password'),
+                    hintText: 'Enter secure password',
+                    hoverColor: Color(0xFFFF9E80),
+                    focusColor: Color(0xFFFF9E80),
+                    fillColor: Color(0xFFFF9E80),),
               ),
             ),
             TextButton(
@@ -105,14 +115,15 @@ class _SignInScreenState extends State<SignInScreen> {
               },
               child: Text(
                 'Forgot Password',
-                style: TextStyle(color: Colors.blue, fontSize: 15),
+                style: TextStyle(color: Color(0xFFFF9E80), fontSize: 15),
               ),
             ),
             Container(
               height: 50,
               width: 250,
               decoration: BoxDecoration(
-                  color: Colors.blue, borderRadius: BorderRadius.circular(20)),
+                 //color:  Color(0xFFFF9E80), borderRadius: BorderRadius.circular(20)),
+                  color:  Color(0xFFFF9E80),),
               child: ElevatedButton(
                 onPressed: submit && emailHandle
                     ? () {
