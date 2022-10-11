@@ -6,6 +6,7 @@ import 'package:seniorproject/screens/notifications_screen.dart';
 import 'package:seniorproject/screens/rating_system_screen.dart';
 import 'package:seniorproject/screens/resources_screen.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -71,32 +72,50 @@ class _BottomNavBarState extends State<BottomNavBar> {
           currentIndex: _currentIndex,
           items: [
             BottomNavigationBarItem(
-              icon: new Icon(Icons.home),
+              icon: new Icon(Icons.home, color:Color(0xFFFF9E80) ),
               label: "Home",
-              backgroundColor: Colors.blue,
+             backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.search),
+              icon: new Icon(Icons.search, color:Color(0xFFFF9E80) ),
               label: "Explorer",
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.star),
+              icon: new Icon(Icons.star, color:Color(0xFFFF9E80) ),
               label: "Rating System",
-              backgroundColor: Colors.blue,
+             backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.notifications_active),
+              icon: new Icon(Icons.notifications_active, color:Color(0xFFFF9E80) ),
               label: "Notifications",
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.link),
+              icon: new Icon(Icons.link, color:Color(0xFFFF9E80) ),
               label: "Resources",
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.white,
             )
           ],
-          selectedItemColor: Colors.amber[500],
+          selectedItemColor: Colors.white,
         ));
   }
 }
+
+// Future dataCollection() async {
+//   final conn = await MySqlConnection.connect(ConnectionSettings(
+//       host: 'campussafetyapp.cra5btmlrrve.us-east-2.rds.amazonaws.com',
+//       port: 3306,
+//       user: 'admin',
+//       db: 'campussafetyapp',
+//       password: 'BangTanS13!'));
+
+//   var results = await conn.query(
+//       'select user_guid, post_guid from posts where post_date = 2022-10-09');
+
+//   for (var row in results) {
+//     print('User Guid: ${row[0]}, Post Guid: ${row[1]}');
+//   }
+
+//   await conn.close();
+// }

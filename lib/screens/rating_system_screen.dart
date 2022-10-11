@@ -11,19 +11,13 @@ class _RatingSystemScreenState extends State<RatingSystemScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-            title: IconButton(
-                key: Key("back-button"),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-                icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
-            backgroundColor: Colors.blue,
-            elevation: 0,
-      ),
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          title: Text('Rating System'),
+          backgroundColor: Color(0xFFFF9E80),
+          elevation: 0,
+        ),
         body: Center(
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

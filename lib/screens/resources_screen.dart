@@ -41,6 +41,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
       home: DefaultTabController(
         length: 2,
         child: Scaffold(
+          backgroundColor: Colors.white,
           appBar: AppBar(
             automaticallyImplyLeading: false,
             title: IconButton(
@@ -51,9 +52,10 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                   });
                 },
                 icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
-            backgroundColor: Colors.blue,
+            backgroundColor: Color(0xFFFF9E80),
             elevation: 0,
             bottom: const TabBar(
+              indicatorColor: Colors.white,
               key: Key("tabs"),
               tabs: [
                 Tab(icon: Icon(Icons.school), key: Key("school-icon")),
@@ -73,7 +75,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                             child: ListTile(
                                 title: Text(
                                   item.key),
-                                trailing: Icon(Icons.link, color: Colors.blue),
+                                trailing: Icon(Icons.link, color: Colors.grey),
                                 onTap: () async {
                                   String link = item.value;
                                   await launchUrlString(link);
@@ -89,7 +91,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                         Card(
                             child: ListTile(
                                 title: Text(item.key),
-                                trailing: Icon(Icons.link, color: Colors.blue),
+                                trailing: Icon(Icons.link, color: Colors.grey),
                                 onTap: () async {
                                   String link = item.value;
                                   await launchUrlString(link);
