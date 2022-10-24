@@ -67,6 +67,7 @@ class _SignInScreenState extends State<SignInScreen> {
               //padding: const EdgeInsets.only(left:15.0,right: 15.0,top:0,bottom: 0),
               padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                cursorColor: Color(0xFFFF9E80),
                 key: Key("email-input"),
                 controller: myController,
                 onChanged: (inputValue) {
@@ -82,14 +83,19 @@ class _SignInScreenState extends State<SignInScreen> {
                   }
                 },
                 decoration: InputDecoration(
-                    errorText:
-                        emailHandle ? null : "Please enter a valid utrgv email",
-                    border: OutlineInputBorder(),
-                    labelText: 'Email', 
-                    hintText: 'Enter valid email id ending in @utrgv.edu',
-                    hoverColor: Color(0xFFFF9E80),
-                    focusColor: Color(0xFFFF9E80),
-                    fillColor: Color(0xFFFF9E80),),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 3, color: Color(0xFFFF9E80))
+                  ),
+                  errorText:
+                      emailHandle ? null : "Please enter a valid utrgv email",
+                  border: OutlineInputBorder(),
+                  labelText: 'Email',
+                  labelStyle: TextStyle(color: Color(0xFFFF9E80)),
+                  hintText: 'Enter valid email id ending in @utrgv.edu',
+                  hoverColor: Color(0xFFFF9E80),
+                  focusColor: Color(0xFFFF9E80),
+                  fillColor: Color(0xFFFF9E80),
+                ),
               ),
             ),
             Padding(
@@ -97,16 +103,25 @@ class _SignInScreenState extends State<SignInScreen> {
                   left: 15.0, right: 15.0, top: 15, bottom: 0),
               //padding: EdgeInsets.symmetric(horizontal: 15),
               child: TextField(
+                cursorColor: Color(0xFFFF9E80),
                 key: Key("password-input"),
                 obscureText: true,
                 decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Password',
-                    hintText: 'Enter secure password',
-                    hoverColor: Color(0xFFFF9E80),
-                    focusColor: Color(0xFFFF9E80),
-                    fillColor: Color(0xFFFF9E80),),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(width: 3, color: Color(0xFFFF9E80))
+                  ),
+                  border: OutlineInputBorder(),
+                  labelText: 'Password',
+                  labelStyle: TextStyle(color: Color(0xFFFF9E80)),
+                  hintText: 'Enter secure password',
+                  hoverColor: Color(0xFFFF9E80),
+                  focusColor: Color(0xFFFF9E80),
+                  fillColor: Color(0xFFFF9E80),
+                ),
               ),
+            ),
+            SizedBox(
+              height: 100,
             ),
             TextButton(
               key: Key("forgot-password"),
@@ -122,16 +137,18 @@ class _SignInScreenState extends State<SignInScreen> {
               height: 50,
               width: 250,
               decoration: BoxDecoration(
-                 //color:  Color(0xFFFF9E80), borderRadius: BorderRadius.circular(20)),
-                  color:  Color(0xFFFF9E80),),
+                //color:  Color(0xFFFF9E80), borderRadius: BorderRadius.circular(20)),
+                color: Color(0xFFFF9E80),
+              ),
               child: ElevatedButton(
+              style: ElevatedButton.styleFrom(primary: Color(0xFFFF9E80)),
                 onPressed: submit && emailHandle
                     ? () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (_) => BottomNavBar()));
                       }
                     : null,
-                    key: Key("login-button"),
+                key: Key("login-button"),
                 child: Text(
                   'Login',
                   style: TextStyle(color: Colors.white, fontSize: 25),
@@ -139,10 +156,9 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(
-              height: 130,
+              height: 35,
             ),
-            Text('New User? Create Account',
-            key: Key('new-user')),
+            Text('New User? Create Account', key: Key('new-user')),
           ],
         ),
       ),

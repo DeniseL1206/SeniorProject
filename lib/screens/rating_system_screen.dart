@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:seniorproject/screens/map_screen.dart';
 import 'dart:async';
 
 class RatingSystemScreen extends StatefulWidget {
@@ -18,18 +19,28 @@ class _RatingSystemScreenState extends State<RatingSystemScreen> {
           backgroundColor: Color(0xFFFF9E80),
           elevation: 0,
         ),
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          // ignore: prefer_const_literals_to_create_immutables
-          children: [
-            SizedBox(
-              height: 130,
+        body: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(32),
+          decoration: const BoxDecoration(
+            //gradient: LinearGradient(begin: Alignment.center, end: Alignment.bottomCenter, colors: Colors.orange),
+            image: DecorationImage(
+              image: AssetImage('KoiInWater.png'), 
+              fit: BoxFit.cover,
+              ),
             ),
-            Text('This is the Rating System Screen',  key: Key("rating-system-text"))
-          ],
-        ))
-        
+          child: Align(
+            alignment: Alignment.center,
+            child: ElevatedButton(
+                    style: 
+                      ElevatedButton.styleFrom(primary: Color(0xFFFF9E80),
+                      minimumSize: Size(200, 60)),
+                    onPressed: () { Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => MapScreen()));},
+                    child: const Text('Explore the Pond', key: Key('rating-system-text')),
+                  ),
+              ),
+          ),
         );
   }
 }

@@ -1,21 +1,14 @@
-//import 'dart:html';
-import 'package:flutter/cupertino.dart';
-import 'package:seniorproject/screens/sign_in_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
-class HomeScreen extends StatefulWidget {
+class CommunityScreen extends StatefulWidget {
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  _CommunityScreenState createState() => _CommunityScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  var postTitleTextController = TextEditingController();
-  var postDescriptionTextController = TextEditingController();
-  var postTitle = null;
-  var postDescription = null;
-
-  void _showDialog() {
+class _CommunityScreenState extends State<CommunityScreen> {
+    void _showDialog() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -99,16 +92,24 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
+  
+  bool selectedValue = false;
 
   @override
   Widget build(BuildContext context) {
-    // ignore: unnecessary_new
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.deepOrange.shade50,
       appBar: AppBar(
-        //automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text('Home', key: Key('home-text')),
+        leading: IconButton(
+            key: Key("back-button"),
+            onPressed: () {
+              setState(() {
+                Navigator.pop(context);
+              });
+            },
+            icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
+        title: Padding(
+            padding: EdgeInsets.only(left: 127), child: Text('Community')),
         backgroundColor: Color(0xFFFF9E80),
         elevation: 0,
         actions: [
@@ -120,6 +121,20 @@ class _HomeScreenState extends State<HomeScreen> {
                 // row with 2 children
                 child: Row(
                   children: [
+                    Icon(CupertinoIcons.star),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("Most Popular")
+                  ],
+                ),
+              ),
+              // PopupMenuItem 2
+             PopupMenuItem(
+                value: 2,
+                // row with 2 children
+                child: Row(
+                  children: [
                     Icon(CupertinoIcons.sort_up_circle),
                     SizedBox(
                       width: 10,
@@ -128,9 +143,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              // PopupMenuItem 2
-              PopupMenuItem(
-                value: 2,
+               PopupMenuItem(
+                value: 3,
                 // row with two children
                 child: Row(
                   children: [
@@ -155,87 +169,51 @@ class _HomeScreenState extends State<HomeScreen> {
               } else if (value == 2) {
                 //_showDialog();
               }
+              else if (value == 3) {
+                //_showDialog();
+              }
             },
           ),
         ],
       ),
-      drawer: Drawer(
-        // Add a ListView to the drawer. This ensures the user can scroll
-        // through the options in the drawer if there isn't enough vertical
-        // space to fit everything.
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: [
-            const UserAccountsDrawerHeader(
-              decoration: BoxDecoration(
-                color: Color(0xFFFF9E80),
+      body: Column(children: [Card(
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(
+            color: Colors.grey.withOpacity(0.2),
+            width: 1,
+          ),
+          //borderRadius: const BorderRadius.all(Radius.circular(12)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.fromLTRB(15, 11, 3, 3),
+                  child: Text("The Visitor's Center Ripple",
+                      style: TextStyle(fontSize: 20))),
+              Spacer(),
+              Padding(
+                padding: EdgeInsets.all(12.0),
+                child: ElevatedButton(
+                    style: 
+                      ElevatedButton.styleFrom(primary: Color(0xFFFF9E80),
+                      minimumSize: Size(80, 40)),
+                    onPressed: () {},
+                    child: const Text('Join'),
+                  ),
               ),
-              accountName: Text(
-                "Randomly Generated UserName",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              accountEmail: Text(
-                "firstuser@utrgv.edu",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('redwhitekoifishavatar.jpg'),
-                  radius: 8),
-            ),
+            ]),
             ListTile(
-              title: const Text('Sign Out'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                //Navigator.pop(context);
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => SignInScreen()));
-              },
+              title: Text("Welcome to the Visitor's Center Ripple!"),
+              subtitle: Text(
+                  "Thank you for visiting this part of the pond. Feel free to interact with other koi and share a story if you feel comfortable in doing so. If otherwise, you are still welcome! Hopefully you'll feel comfortable to do so in the future. Create bonds throughout the pond!"),
             ),
           ],
         ),
       ),
-
-      body: Container(
-        color: Colors.deepOrange.shade50,
-        child: ListView.builder(
-          itemCount: 1,
-          itemBuilder: (context, i) {
-            return Task();
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          _showDialog();
-          //// Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) => super.widget));
-        },
-        backgroundColor: Color(0xFFFF9E80),
-      ),
-    );
-  }
-}
-
-class Task extends StatefulWidget {
-  
-  @override
-  _TaskState createState() => _TaskState();
-}
-
-class _TaskState extends State<Task> {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
+      Card(
       elevation: 0,
       shape: RoundedRectangleBorder(
         side: BorderSide(
@@ -289,6 +267,8 @@ class _TaskState extends State<Task> {
           ),
         ],
       ),
+    )
+  ],)
     );
   }
 }

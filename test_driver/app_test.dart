@@ -66,22 +66,22 @@ void main() {
         expect(await driver.getText(home_text), "Home");
 
         await driver.waitFor(find.byValueKey('navigation-bar'));
+        await Future.delayed(Duration(seconds: 10));
         await driver.tap(find.text('Explorer'));
+        await Future.delayed(Duration(seconds: 10));
         final explorer_text = find.byValueKey("explorer-text");
-        expect(
-            await driver.getText(explorer_text), "This is the Explorer Screen");
+        expect(await driver.getText(explorer_text), "Swim to");
 
         await driver.waitFor(find.byValueKey('navigation-bar'));
         await driver.tap(find.text('Rating System'));
         final ratingsystem_text = find.byValueKey("rating-system-text");
-        expect(await driver.getText(ratingsystem_text),
-            "This is the Rating System Screen");
+        expect(await driver.getText(ratingsystem_text), "Explore the Pond");
 
         await driver.waitFor(find.byValueKey('navigation-bar'));
         await driver.tap(find.text('Notifications'));
         final notifications_text = find.byValueKey("notifications-text");
         expect(await driver.getText(notifications_text),
-            "This is the Notifications Screen");
+            "Someone smiled at your post");
 
         await driver.waitFor(find.byValueKey('navigation-bar'));
         await driver.tap(find.text('Resources'));
