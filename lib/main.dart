@@ -5,7 +5,7 @@ import 'package:seniorproject/screens/explore_screen.dart';
 import 'package:seniorproject/screens/notifications_screen.dart';
 import 'package:seniorproject/screens/rating_system_screen.dart';
 import 'package:seniorproject/screens/resources_screen.dart';
-
+import 'package:seniorproject/screens/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: SignInScreen(),
+      home: SplashScreen(),
     );
   }
 }
@@ -72,27 +72,28 @@ class _BottomNavBarState extends State<BottomNavBar> {
           currentIndex: _currentIndex,
           items: [
             BottomNavigationBarItem(
-              icon: new Icon(Icons.home, color:Color(0xFFFF9E80) ),
+              icon: new Icon(Icons.home, color: Color(0xFFFF9E80)),
               label: "Home",
-             backgroundColor: Colors.white,
+              backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.search, color:Color(0xFFFF9E80) ),
+              icon: new Icon(Icons.search, color: Color(0xFFFF9E80)),
               label: "Explorer",
               backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.star, color:Color(0xFFFF9E80) ),
+              icon: new Icon(Icons.star, color: Color(0xFFFF9E80)),
               label: "Rating System",
-             backgroundColor: Colors.white,
+              backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.notifications_active, color:Color(0xFFFF9E80) ),
+              icon: new Icon(Icons.notifications_active,
+                  color: Color(0xFFFF9E80)),
               label: "Notifications",
               backgroundColor: Colors.white,
             ),
             BottomNavigationBarItem(
-              icon: new Icon(Icons.link, color:Color(0xFFFF9E80) ),
+              icon: new Icon(Icons.link, color: Color(0xFFFF9E80)),
               label: "Resources",
               backgroundColor: Colors.white,
             )

@@ -43,8 +43,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: IconButton(
+            leading: IconButton(
                 key: Key("back-button"),
                 onPressed: () {
                   setState(() {
@@ -52,6 +51,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                   });
                 },
                 icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
+            title: Text('Resources'),
             backgroundColor: Color(0xFFFF9E80),
             elevation: 0,
             bottom: const TabBar(
