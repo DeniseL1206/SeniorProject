@@ -145,7 +145,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 onPressed: submit && emailHandle
                     ? () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => BottomNavBar()));
+                            MaterialPageRoute(builder: (_) => BottomNavBar(myController.text)));
                       }
                     : null,
                 key: Key("login-button"),

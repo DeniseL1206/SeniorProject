@@ -84,36 +84,39 @@ class DropdownButtonExample extends StatefulWidget {
 
 class _DropdownButtonExampleState extends State<DropdownButtonExample> {
   String dropdownValue = list.first;
+  String selectedCommunity = '';
 
   @override
   Widget build(BuildContext context) {
-    return 
-        DropdownButton<String>(
-          isExpanded: true,
-          hint: Text("Swim to", key: Key('explorer-text')),
-          value: null,
-          icon: const Icon(Icons.water, color: Color(0xFFFF9E80)),
-          elevation: 16,
-          style: const TextStyle(color: Colors.grey),
-          underline: Container(
-            height: 2,
-            color: Colors.grey,
-          ),
-          onChanged: (String? value) {
-            // This is called when the user selects an item.
-            setState(() {
-              dropdownValue = value!;
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => CommunityScreen()));
-            });
-          },
-          items: list.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
-            );
-          }).toList(),
+    return DropdownButton<String>(
+      isExpanded: true,
+      hint: Text("Swim to", key: Key('explorer-text')),
+      value: null,
+      icon: const Icon(Icons.water, color: Color(0xFFFF9E80)),
+      elevation: 16,
+      style: const TextStyle(color: Colors.grey),
+      underline: Container(
+        height: 2,
+        color: Colors.grey,
+      ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          selectedCommunity = value!;
+          dropdownValue = selectedCommunity;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => CommunityScreen(selectedCommunity)));
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
         );
+      }).toList(),
+    );
   }
 }
 
@@ -153,3 +156,4 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
     );
   }
 }
+

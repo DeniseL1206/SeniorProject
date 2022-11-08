@@ -39,6 +39,9 @@ class MyApp extends StatelessWidget {
 //Class to implement Navigation Bar That will direct to the different pages
 
 class BottomNavBar extends StatefulWidget {
+  String userEmail = '';
+  BottomNavBar(this.userEmail);
+
   @override
   static const String _Title = 'Flutter Sample code ';
 
@@ -47,6 +50,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _currentIndex = 0;
+
   final List<Widget> _children = [
     HomeScreen(),
     ExplorerScreen(),

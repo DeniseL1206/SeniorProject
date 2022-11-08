@@ -3,8 +3,68 @@ import 'package:flutter/cupertino.dart';
 import 'package:seniorproject/screens/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:mysql1/mysql1.dart';
+import 'package:seniorproject/utils/database_connection.dart';
+import 'package:seniorproject/screens/expanded_post_screen.dart';
 
+const List<String> list = <String>[
+  'Hate speech or symbols',
+  'Violence or threat of violence',
+  'Harassment or bullying',
+  'Self injury'
+];
+
+String reportValue = '';
+
+//DropDown for Reporting
+class DropdownButtonExample extends StatefulWidget {
+  const DropdownButtonExample({key});
+
+  @override
+  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
+}
+
+class _DropdownButtonExampleState extends State<DropdownButtonExample> {
+  String dropdownValue = list.first;
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      isExpanded: true,
+      // hint: Text("Choose a reason for reporting:",
+      //   key: Key('report-prompt-text')),
+      value: dropdownValue,
+      elevation: 16,
+      style: const TextStyle(color: Colors.grey),
+      underline: Container(
+        height: 2,
+        color: Colors.grey,
+      ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+          reportValue = dropdownValue;
+          //value = value!;
+          //Navigator.push(
+          //context, MaterialPageRoute(builder: (_) => CommunityScreen()));
+        });
+      },
+      items: list.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+}
+
+//Home Page
 class HomeScreen extends StatefulWidget {
+  //String userEmail = '';
+  //HomeScreen(this.userEmail);
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -14,16 +74,19 @@ class _HomeScreenState extends State<HomeScreen> {
   var postDescriptionTextController = TextEditingController();
   var postTitle = null;
   var postDescription = null;
+  final ScrollController _scrollController = ScrollController();
 
-  void _showDialog() {
+  void _showDialogNewPost() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: Container(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: EdgeInsets.only(top: 10.0),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
               width: 300.0,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -38,16 +101,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         "New Post",
                         style: TextStyle(fontSize: 24.0),
                       ),
-                      Padding(padding: EdgeInsets.only(left: 65.0), child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: const Icon(Icons.cancel_outlined),
-                            onPressed: () => Navigator.pop(context),
-                            color: Color(0xFFFF9E80),
-                            ),                           
-                        ],
-                      ),)
+                      Padding(
+                        padding: EdgeInsets.only(left: 65.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.cancel_outlined),
+                              onPressed: () => Navigator.pop(context),
+                              color: Color(0xFFFF9E80),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(
@@ -58,8 +124,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 4.0,
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: TextField(
+                      controller: postTitleTextController,
                       decoration: InputDecoration(
                         hintText: "Post Title",
                         border: InputBorder.none,
@@ -67,9 +134,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       maxLines: 2,
                     ),
                   ),
-                 Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
                     child: TextField(
+                      controller: postDescriptionTextController,
                       decoration: InputDecoration(
                         hintText: "Post Description",
                         border: InputBorder.none,
@@ -79,23 +147,26 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   InkWell(
                     child: Container(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFFF9E80),
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(32.0),
-                            bottomRight: Radius.circular(32.0)),
-                      ),
-                      child: TextButton(
-                       style: TextButton.styleFrom(primary: Colors.white),
-                       onPressed: () => Navigator.pop(context),
-                       child: const Text("Post"))
-                    ),
+                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFF9E80),
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(32.0),
+                              bottomRight: Radius.circular(32.0)),
+                        ),
+                        child: TextButton(
+                            style: TextButton.styleFrom(primary: Colors.white),
+                            onPressed: () {
+                              //DatabaseConnection.InsertPost(user_guid, community_guid, post);
+                              Navigator.pop(context);
+                            },
+                            child: const Text("Post"))),
                   ),
                 ],
               ),
             ),
-          );
+          ),
+        );
       },
     );
   }
@@ -103,7 +174,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // ignore: unnecessary_new
+    // resizeToAvoidBottomPadding:
+    // false;
+    // resizeToAvoidBottomInset:
+    // false;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Colors.white,
       appBar: AppBar(
         //automaticallyImplyLeading: false,
@@ -201,20 +277,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-
-      body: Container(
-        color: Colors.deepOrange.shade50,
-        child: ListView.builder(
-          itemCount: 1,
-          itemBuilder: (context, i) {
-            return Task();
-          },
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Container(
+          color: Colors.deepOrange.shade50,
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: 1,
+            itemBuilder: (context, i) {
+              return Task();
+            },
+          ),
         ),
       ),
+
+      // Container(
+      //   color: Colors.deepOrange.shade50,
+      //   child: ListView.builder(
+      //     shrinkWrap: true,
+      //     itemCount: 1,
+      //     itemBuilder: (context, i) {
+      //       return Task();
+      //     },
+      //   ),
+      // ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          _showDialog();
+          _showDialogNewPost();
           //// Navigator.pushReplacement(
           //     context,
           //     MaterialPageRoute(
@@ -226,13 +316,148 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+//Generation of Posts
 class Task extends StatefulWidget {
-  
   @override
   _TaskState createState() => _TaskState();
 }
 
 class _TaskState extends State<Task> {
+  late Future<Results> results;
+
+  @override
+  void initState() {
+    super.initState();
+    results = DatabaseConnection.Posts();
+  }
+
+  void _showDialogReport() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: EdgeInsets.only(top: 10.0),
+          content: Container(
+            width: 300.0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text(
+                      "Report",
+                      style: TextStyle(fontSize: 24.0),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 65.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: const Icon(Icons.cancel_outlined),
+                            onPressed: () => Navigator.pop(context),
+                            color: Color(0xFFFF9E80),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Divider(
+                  color: Colors.grey,
+                  height: 4.0,
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(30.0, 20, 30, 0),
+                  child: Text("Choose a reason for reporting: "),
+                ),
+                SizedBox(
+                  height: 5.0,
+                ),
+                Divider(
+                  color: Colors.transparent,
+                  height: 4.0,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                    child: DropdownButtonExample()),
+
+                // Padding(
+                //   padding: EdgeInsets.only(left: 30.0, right: 30.0),
+                //   child: TextField(
+                //     decoration: InputDecoration(
+                //       hintText: "Post Description",
+                //       border: InputBorder.none,
+                //     ),
+                //     maxLines: 8,
+                //   ),
+                // ),
+
+                SizedBox(
+                  height: 35.0,
+                ),
+                InkWell(
+                  child: Container(
+                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFFF9E80),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(32.0),
+                          bottomRight: Radius.circular(32.0)),
+                    ),
+                    child: TextButton(
+                      onPressed: () => showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('Reporting Post'),
+                          content: Text(
+                              'Are you sure you want to report this post for ${reportValue}?'),
+                          actions: <Widget>[
+                            TextButton(
+                              style: TextButton.styleFrom(primary: Colors.red),
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              style: TextButton.styleFrom(primary: Colors.blue),
+                              //onPressed: () => Navigator.pop(context, 'OK'),
+                              onPressed: () {
+                                //DatabaseConnection.ReportPost(post_guid);
+                                int count = 2;
+                                Navigator.of(context)
+                                    .popUntil((_) => count-- == 0);
+                              },
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      ),
+                      child: const Text('Report',
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                    // child: TextButton(
+                    //     style: TextButton.styleFrom(primary: Colors.white),
+                    //     onPressed: () => Navigator.pop(context),
+                    //     child: const Text("Report"))),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -268,25 +493,42 @@ class _TaskState extends State<Task> {
             subtitle: Text(
                 'I am very happy that an application like this exists for the university. Definitely excited to implement this in my campus life.'),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.sentiment_satisfied_alt_outlined),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                icon: Icon(Icons.sentiment_dissatisfied_outlined),
-                onPressed: () {/* ... */},
-              ),
-              const SizedBox(width: 8),
-              IconButton(
-                icon: Icon(Icons.comment_outlined),
-                onPressed: () {/* ... */},
-              ),
-            ],
+          TextButton(
+            style: TextButton.styleFrom(primary: Colors.blue),
+            onPressed: () {
+              setState(() {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => ExpandedPostScreen()));
+              });
+            },
+            child: const Text('View More...'),
           ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: <Widget>[
+          //     IconButton(
+          //       icon: Icon(Icons.sentiment_satisfied_alt_outlined),
+          //       onPressed: () {/* ... */},
+          //     ),
+          //     const SizedBox(width: 8),
+          //     IconButton(
+          //       icon: Icon(Icons.sentiment_dissatisfied_outlined),
+          //       onPressed: () {/* ... */},
+          //     ),
+          //     const SizedBox(width: 8),
+          //     IconButton(
+          //       icon: Icon(Icons.comment_outlined),
+          //       onPressed: () {/* ... */},
+          //     ),
+          //     const SizedBox(width: 8),
+          //     IconButton(
+          //       icon: Icon(Icons.report_gmailerrorred),
+          //       onPressed: () {
+          //         _showDialogReport();
+          //       },
+          //     ),
+          //   ],
+          // ),
         ],
       ),
     );
