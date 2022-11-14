@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:seniorproject/screens/sign_in_screen.dart';
 import 'package:seniorproject/screens/home_screen.dart';
@@ -7,7 +8,13 @@ import 'package:seniorproject/screens/rating_system_screen.dart';
 import 'package:seniorproject/screens/resources_screen.dart';
 import 'package:seniorproject/screens/splash_screen.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

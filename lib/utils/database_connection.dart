@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:mysql1/mysql1.dart';
+import 'package:username_generator/username_generator.dart';
 
 class DatabaseConnection {
   static Future<Results> Posts() async {
@@ -125,5 +126,20 @@ class DatabaseConnection {
     await conn.query('update Locations_Communities set followers=followers + 1 where _guid=?',
     [community_guid]);
     // Allow user to get notifications from the community they followed
+  }
+
+  static Future<Results> InsertUser(String email) async {
+    UsernameGenerator username = new UsernameGenerator();
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+        host: 'campussafetyapp.cra5btmlrrve.us-east-2.rds.amazonaws.com',
+        port: 3306,
+        user: 'admin',
+        db: 'Koi',
+        password: 'BangTanS13!'));
+
+    // Query the database using a parameterized query
+    Results results = await conn.query('insert into Users (user_name, user_email, posts) values (?, ?, ?)', [username.generateRandom(), email, 0]);
+    //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
+    return results;
   }
 }
