@@ -70,18 +70,18 @@ class _ExpandedPostScreenState extends State<ExpandedPostScreen> {
             subtitle: Text(
                 'I am very happy that an application like this exists for the university. Definitely excited to implement this in my campus life.'),
           ),
-          TextButton(
-                              style: TextButton.styleFrom(primary: Colors.blue),
-                              onPressed: () {
-                                setState(() {
-                                      Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => ExpandedPostScreen()));                            
-                                                                });
-                              },
-                              child: const Text('View More...'),
-                            ),
+          // TextButton(
+          //                     style: TextButton.styleFrom(primary: Colors.blue),
+          //                     onPressed: () {
+          //                       setState(() {
+          //                             Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (_) => ExpandedPostScreen()));                            
+          //                                                       });
+          //                     },
+          //                     child: const Text('View More...'),
+          //                   ),
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:seniorproject/main.dart';
 import 'dart:async';
 import 'home_screen.dart';
+import 'create_account_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -84,8 +85,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 },
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 3, color: Color(0xFFFF9E80))
-                  ),
+                      borderSide:
+                          BorderSide(width: 3, color: Color(0xFFFF9E80))),
                   errorText:
                       emailHandle ? null : "Please enter a valid utrgv email",
                   border: OutlineInputBorder(),
@@ -108,8 +109,8 @@ class _SignInScreenState extends State<SignInScreen> {
                 obscureText: true,
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(width: 3, color: Color(0xFFFF9E80))
-                  ),
+                      borderSide:
+                          BorderSide(width: 3, color: Color(0xFFFF9E80))),
                   border: OutlineInputBorder(),
                   labelText: 'Password',
                   labelStyle: TextStyle(color: Color(0xFFFF9E80)),
@@ -141,11 +142,14 @@ class _SignInScreenState extends State<SignInScreen> {
                 color: Color(0xFFFF9E80),
               ),
               child: ElevatedButton(
-              style: ElevatedButton.styleFrom(primary: Color(0xFFFF9E80)),
+                style: ElevatedButton.styleFrom(primary: Color(0xFFFF9E80)),
                 onPressed: submit && emailHandle
                     ? () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => BottomNavBar(myController.text)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    BottomNavBar(myController.text)));
                       }
                     : null,
                 key: Key("login-button"),
@@ -156,9 +160,27 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(
-              height: 35,
+              height: 30,
             ),
-            Text('New User? Create Account', key: Key('new-user')),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('New User?'),
+                TextButton(
+                    onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    CreateAccountScreen()));
+                    },
+                    child: Text('Create Account',
+                        style: TextStyle(color: Color(0xFFFF9E80)),
+                        key: Key('new-user'))),
+              ],
+            )
+            // Text('New User?'),
+            // TextButton(onPressed: () {}, child: Text('Create Account', key: Key('new-user'))),
           ],
         ),
       ),
