@@ -123,11 +123,11 @@ class _SubmitButton extends StatelessWidget {
             password: password,
           );
 
-          //DatabaseConnection.InsertUser(email);
+          DatabaseConnection.InsertUser(email);
 
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => HomeScreen(email),
             ),
           );
         } catch (e) {

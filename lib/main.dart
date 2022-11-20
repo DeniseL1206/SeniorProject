@@ -56,13 +56,20 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int _currentIndex = 0;
+  String returnEmail() {
+    String email = '';
+    email = widget.userEmail;
+    return email;
+  }
 
-  final List<Widget> _children = [
-    HomeScreen(),
+  int _currentIndex = 0;
+  late String email = returnEmail();
+
+  late final List<Widget> _children = [
+    HomeScreen(email),
     ExplorerScreen(),
     RatingSystemScreen(),
-    NotificationsScreen(),
+    NotificationsScreen(email),
     ResourcesScreen()
   ];
 
