@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 class NotificationsScreen extends StatefulWidget {
+  String userEmail = '';
+  NotificationsScreen(this.userEmail);
+
   @override
   _NotificationsScreenState createState() => _NotificationsScreenState();
 }
