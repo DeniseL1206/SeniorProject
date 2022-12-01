@@ -5,6 +5,7 @@ import 'package:seniorproject/main.dart';
 import 'dart:async';
 import 'home_screen.dart';
 import 'create_account_screen.dart';
+import 'forgot_password_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -127,7 +128,8 @@ class _SignInScreenState extends State<SignInScreen> {
             TextButton(
               key: Key("forgot-password"),
               onPressed: () {
-                //TODO FORGOT PASSWORD SCREEN GOES HERE
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => ForgotPasswordScreen()));
               },
               child: Text(
                 'Forgot Password',
@@ -168,11 +170,10 @@ class _SignInScreenState extends State<SignInScreen> {
                 Text('New User?'),
                 TextButton(
                     onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    CreateAccountScreen()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => CreateAccountScreen()));
                     },
                     child: Text('Create Account',
                         style: TextStyle(color: Color(0xFFFF9E80)),

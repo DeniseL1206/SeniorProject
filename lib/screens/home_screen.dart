@@ -1,4 +1,6 @@
 //import 'dart:html';
+//import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:seniorproject/screens/sign_in_screen.dart';
 import 'package:flutter/material.dart';
@@ -6,8 +8,10 @@ import 'dart:async';
 import 'package:mysql1/mysql1.dart';
 import 'package:seniorproject/utils/database_connection.dart';
 import 'package:seniorproject/screens/expanded_post_screen.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:intl/intl.dart';
 
-const List<String> list = <String>[
+const List<String> reportTypes = <String>[
   'Hate speech or symbols',
   'Violence or threat of violence',
   'Harassment or bullying',
@@ -15,6 +19,121 @@ const List<String> list = <String>[
 ];
 
 String reportValue = '';
+
+const List<String> comms = <String>[
+  'Social Work and Occupational Therapy',
+  'International Trade & Technology',
+  'Orville Cox Tennis Center',
+  'Track & Soccer Field',
+  'Performing Arts Complex A',
+  'Southwick Hall',
+  'Performing Arts Complex C',
+  'Performing Arts Complex B',
+  'Executive Tower',
+  'Student Services Building',
+  'Visitors Center',
+  'Mathematics & Science Academy',
+  'Marialice Shary Shivers',
+  'Student Academic Center',
+  'University Center',
+  'Chapel',
+  'Student Union',
+  'Dining & Ballroom Complex',
+  'Health & Physical Education II',
+  'Engineering Portable',
+  'Engineering',
+  'Academic Services',
+  'Physical Science',
+  'Intramural Fields',
+  'Troxel Hall',
+  'Heritage Hall',
+  'Emilia Schunior Ramirez Hall',
+  'Sugar Road Annex',
+  'Health & Physical Education Complex Fieldhouse',
+  'H.E.B. Planetarium',
+  'Science',
+  'The Learning Center',
+  'University Library',
+  'Liberal Arts Building South',
+  'Child Development Center',
+  'Agroecology Research Community Garden',
+  'Greenhouse',
+  'Portable Buildings 9, 10, 11, 12, 13',
+  'Education Complex',
+  'Mathematics & General Classrooms',
+  'Computer Center',
+  'Robert C. Vackar College of Business and Entrepreneurship',
+  'Central Utility Plant',
+  'Health Affairs Building East',
+  'Behavioral Neurosciences',
+  'Health Affairs Building West',
+  'Health Affairs Building West Classroom A',
+  'Health Affairs Building West Auditorium',
+  'Liberal Arts Building North',
+  'Unity Hall',
+  'Rio Grande Center for Manufacturing',
+  'Police and Parking & Transportation Offices',
+  'Academic Support Facility',
+  'The Village A',
+  'The Village B',
+  'The Village C',
+  'The Village D',
+  'The Village E',
+  'The Village F',
+  'Environmental Health & Safety',
+  'Thermal Storage Tank',
+  'Lamar E',
+  'Research Education-(School of Medicine)',
+  'Medical Education-(School of Medicine)',
+  'Student Health Center',
+  'University Recreation',
+  'ROTC Storage',
+  'ROTC',
+  'Baseball Stadium',
+  'Soccer and Track & Field Complex'
+];
+
+String postComm = '';
+
+//Dropdown for New Post Comms
+class DropdownButtonComms extends StatefulWidget {
+  const DropdownButtonComms({key});
+
+  @override
+  State<DropdownButtonComms> createState() => _DropdownButtonComms();
+}
+
+class _DropdownButtonComms extends State<DropdownButtonComms> {
+  String dropdownValue = comms.first;
+  String selectedCommunity = '';
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<String>(
+      isExpanded: true,
+      value: dropdownValue,
+      elevation: 16,
+      style: const TextStyle(color: Colors.grey),
+      underline: Container(
+        height: 2,
+        color: Colors.grey,
+      ),
+      onChanged: (String? value) {
+        // This is called when the user selects an item.
+        setState(() {
+          dropdownValue = value!;
+          postComm = dropdownValue;
+        });
+      },
+      items: comms.map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
+    );
+  }
+}
 
 //DropDown for Reporting
 class DropdownButtonExample extends StatefulWidget {
@@ -25,7 +144,7 @@ class DropdownButtonExample extends StatefulWidget {
 }
 
 class _DropdownButtonExampleState extends State<DropdownButtonExample> {
-  String dropdownValue = list.first;
+  String dropdownValue = reportTypes.first;
 
   @override
   Widget build(BuildContext context) {
@@ -45,12 +164,9 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
         setState(() {
           dropdownValue = value!;
           reportValue = dropdownValue;
-          //value = value!;
-          //Navigator.push(
-          //context, MaterialPageRoute(builder: (_) => CommunityScreen()));
         });
       },
-      items: list.map<DropdownMenuItem<String>>((String value) {
+      items: reportTypes.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
@@ -62,8 +178,8 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
 
 //Home Page
 class HomeScreen extends StatefulWidget {
-  //String userEmail = '';
-  //HomeScreen(this.userEmail);
+  String userEmail = '';
+  HomeScreen(this.userEmail);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -72,8 +188,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var postTitleTextController = TextEditingController();
   var postDescriptionTextController = TextEditingController();
-  var postTitle = null;
-  var postDescription = null;
+  // var postTitle = null;
+  // var postDescription = null;
   final ScrollController _scrollController = ScrollController();
 
   void _showDialogNewPost() {
@@ -117,11 +233,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   SizedBox(
-                    height: 5.0,
+                    height: 8.0,
                   ),
                   Divider(
                     color: Colors.grey,
                     height: 4.0,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: DropdownButtonComms(),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5.0,
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
@@ -157,7 +283,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: TextButton(
                             style: TextButton.styleFrom(primary: Colors.white),
                             onPressed: () {
-                              //DatabaseConnection.InsertPost(user_guid, community_guid, post);
+                              DatabaseConnection.InsertPost(
+                                  widget.userEmail,
+                                  postComm,
+                                  postTitleTextController.text,
+                                  postDescriptionTextController.text);
                               Navigator.pop(context);
                             },
                             child: const Text("Post"))),
@@ -277,34 +407,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        child: Container(
+      body: Container(
           color: Colors.deepOrange.shade50,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: 1,
-            itemBuilder: (context, i) {
-              return Task();
-            },
-          ),
-        ),
-      ),
-
-      // Container(
-      //   color: Colors.deepOrange.shade50,
-      //   child: ListView.builder(
-      //     shrinkWrap: true,
-      //     itemCount: 1,
-      //     itemBuilder: (context, i) {
-      //       return Task();
-      //     },
-      //   ),
-      // ),
+          child: PostGeneration(widget.userEmail)),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           _showDialogNewPost();
+          //Refresh Page
           //// Navigator.pushReplacement(
           //     context,
           //     MaterialPageRoute(
@@ -316,221 +426,126 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-//Generation of Posts
-class Task extends StatefulWidget {
+//Generation of Posts Test Functions
+class PostGeneration extends StatefulWidget {
+  String userEmail = '';
+  PostGeneration(this.userEmail);
+
   @override
-  _TaskState createState() => _TaskState();
+  _PostGeneration createState() => _PostGeneration();
 }
 
-class _TaskState extends State<Task> {
+class _PostGeneration extends State<PostGeneration> {
   late Future<Results> results;
 
   @override
   void initState() {
     super.initState();
-    results = DatabaseConnection.Posts();
-  }
-
-  void _showDialogReport() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0))),
-          contentPadding: EdgeInsets.only(top: 10.0),
-          content: Container(
-            width: 300.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "Report",
-                      style: TextStyle(fontSize: 24.0),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 65.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: const Icon(Icons.cancel_outlined),
-                            onPressed: () => Navigator.pop(context),
-                            color: Color(0xFFFF9E80),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Divider(
-                  color: Colors.grey,
-                  height: 4.0,
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(30.0, 20, 30, 0),
-                  child: Text("Choose a reason for reporting: "),
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Divider(
-                  color: Colors.transparent,
-                  height: 4.0,
-                ),
-                Padding(
-                    padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                    child: DropdownButtonExample()),
-
-                // Padding(
-                //   padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                //   child: TextField(
-                //     decoration: InputDecoration(
-                //       hintText: "Post Description",
-                //       border: InputBorder.none,
-                //     ),
-                //     maxLines: 8,
-                //   ),
-                // ),
-
-                SizedBox(
-                  height: 35.0,
-                ),
-                InkWell(
-                  child: Container(
-                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFF9E80),
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(32.0),
-                          bottomRight: Radius.circular(32.0)),
-                    ),
-                    child: TextButton(
-                      onPressed: () => showDialog<String>(
-                        context: context,
-                        builder: (BuildContext context) => AlertDialog(
-                          title: const Text('Reporting Post'),
-                          content: Text(
-                              'Are you sure you want to report this post for ${reportValue}?'),
-                          actions: <Widget>[
-                            TextButton(
-                              style: TextButton.styleFrom(primary: Colors.red),
-                              onPressed: () => Navigator.pop(context, 'Cancel'),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              style: TextButton.styleFrom(primary: Colors.blue),
-                              //onPressed: () => Navigator.pop(context, 'OK'),
-                              onPressed: () {
-                                //DatabaseConnection.ReportPost(post_guid);
-                                int count = 2;
-                                Navigator.of(context)
-                                    .popUntil((_) => count-- == 0);
-                              },
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                      ),
-                      child: const Text('Report',
-                          style: TextStyle(color: Colors.white)),
-                    ),
-                    // child: TextButton(
-                    //     style: TextButton.styleFrom(primary: Colors.white),
-                    //     onPressed: () => Navigator.pop(context),
-                    //     child: const Text("Report"))),
-                  ),
-                )
-              ],
-            ),
-          ),
-        );
-      },
-    );
+    results = DatabaseConnection.PostsforUser(widget.userEmail);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(
-          color: Colors.grey.withOpacity(0.2),
-          width: 1,
-        ),
-        //borderRadius: const BorderRadius.all(Radius.circular(12)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-            Padding(
-                padding: EdgeInsets.all(12.0),
-                child: CircleAvatar(
-                  backgroundImage: AssetImage('redwhitekoifishavatar.jpg'),
-                )),
-            Padding(
-                padding: EdgeInsets.fromLTRB(1, 11, 3, 3),
-                child: Text(' r/ESSBL \n firstuser@utrgv.edu',
-                    style: TextStyle(fontSize: 15))),
-            Spacer(),
-            Padding(
-              padding: EdgeInsets.all(12.0),
-              child: Text('2022-10-09'),
-            ),
-          ]),
-          ListTile(
-            title: Text('Excited about the new app!'),
-            subtitle: Text(
-                'I am very happy that an application like this exists for the university. Definitely excited to implement this in my campus life.'),
-          ),
-          TextButton(
-            style: TextButton.styleFrom(primary: Colors.blue),
-            onPressed: () {
-              setState(() {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => ExpandedPostScreen()));
-              });
-            },
-            child: const Text('View More...'),
-          ),
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   children: <Widget>[
-          //     IconButton(
-          //       icon: Icon(Icons.sentiment_satisfied_alt_outlined),
-          //       onPressed: () {/* ... */},
-          //     ),
-          //     const SizedBox(width: 8),
-          //     IconButton(
-          //       icon: Icon(Icons.sentiment_dissatisfied_outlined),
-          //       onPressed: () {/* ... */},
-          //     ),
-          //     const SizedBox(width: 8),
-          //     IconButton(
-          //       icon: Icon(Icons.comment_outlined),
-          //       onPressed: () {/* ... */},
-          //     ),
-          //     const SizedBox(width: 8),
-          //     IconButton(
-          //       icon: Icon(Icons.report_gmailerrorred),
-          //       onPressed: () {
-          //         _showDialogReport();
-          //       },
-          //     ),
-          //   ],
-          // ),
-        ],
-      ),
-    );
+    return Posts(results);
+  }
+}
+
+class Posts extends StatefulWidget {
+  Future<Results> posts;
+  Posts(this.posts);
+
+  @override
+  _Posts createState() => _Posts();
+}
+
+class _Posts extends State<Posts> {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+        future: widget.posts,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            // If we got an error
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  '${snapshot.error} occurred',
+                  style: TextStyle(fontSize: 18),
+                ),
+              );
+            } else if (snapshot.hasData) {
+              final truePosts = snapshot.data as Results;
+
+              return ListView(
+                children: [
+                  for (var element in truePosts)
+                    Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                          color: Colors.grey.withOpacity(0.2),
+                          width: 1,
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          'redwhitekoifishavatar.jpg'),
+                                    )),
+                                Padding(
+                                    padding: EdgeInsets.fromLTRB(1, 11, 3, 3),
+                                    child: 
+                                        AutoSizeText(
+                                      ' r/${element[2]} \n ${element[1]}',
+                                      style: TextStyle(fontSize: 13),
+                                      maxLines: 2,
+                                    )),
+                                Spacer(),
+                                Padding(
+                                    padding: EdgeInsets.all(12.0),
+                                    child: 
+                                        AutoSizeText(
+                                      '${DateFormat('yyyy-MM-dd').format(element[3])
+                                      }',
+                                      style: TextStyle(fontSize: 2),
+                                      maxLines: 1,
+                                    )),
+                              ]),
+                          ListTile(
+                              title: 
+                                  Text('${element[4]}'),
+                              subtitle: 
+                                  Text('${element[5]}')),
+                          TextButton(
+                            style: TextButton.styleFrom(primary: Colors.blue),
+                            onPressed: () {
+                              setState(() {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => ExpandedPostScreen("home")));
+                              });
+                            },
+                            child: const Text('View More...'),
+                          ),
+                        ],
+                      ),
+                    ),
+                ],
+              );
+            }
+          }
+
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        });
   }
 }

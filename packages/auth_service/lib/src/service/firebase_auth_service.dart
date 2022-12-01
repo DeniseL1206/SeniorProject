@@ -81,8 +81,8 @@ class FirebaseAuthService implements AuthService {
       case 'email-already-in-use':
       case 'account-exists-with-different-credential':
         return AuthError.emailAlreadyInUse;
-      case 'invalid-credential':
-        return AuthError.invalidCredential;
+      //case 'invalid-credential':
+      // return AuthError.invalidCredential;
       case 'operation-not-allowed':
         return AuthError.operationNotAllowed;
       case 'weak-password':
