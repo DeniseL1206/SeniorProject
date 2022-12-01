@@ -222,7 +222,7 @@ class DatabaseConnection {
     
     //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
   }
-  
+
   //Add community to user!
   // static Future JoinCommunity(String user_guid, String community_guid) async {
   //   final conn = await MySqlConnection.connect(ConnectionSettings(
