@@ -158,6 +158,71 @@ class DatabaseConnection {
     //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
   }
 
+  static Future SmileAtPost(String post_guid) async {
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+        host: 'campussafetyapp.cra5btmlrrve.us-east-2.rds.amazonaws.com',
+        port: 3306,
+        user: 'admin',
+        db: 'Koi',
+        password: 'BangTanS13!'));
+
+    // Query the database using a parameterized query
+    await conn.query(
+        'update Posts set smiles=smiles + 1 where post_guid=?', [post_guid]);
+    //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
+  }
+
+  static Future CryAtPost(String post_guid) async {
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+        host: 'campussafetyapp.cra5btmlrrve.us-east-2.rds.amazonaws.com',
+        port: 3306,
+        user: 'admin',
+        db: 'Koi',
+        password: 'BangTanS13!'));
+
+    // Query the database using a parameterized query
+    await conn.query(
+        'update Posts set cries=cries + 1 where post_guid=?', [post_guid]);
+    //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
+  }
+
+  static Future CommentOnPost(String post_guid, String comment) async {
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+        host: 'campussafetyapp.cra5btmlrrve.us-east-2.rds.amazonaws.com',
+        port: 3306,
+        user: 'admin',
+        db: 'Koi',
+        password: 'BangTanS13!'));
+
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+    // Query the database using a parameterized query
+    await conn.query('update Posts set comments=comments + 1 where post_guid=?',
+        [post_guid]);
+
+    await conn.query('insert into Comments (post_guid, comment_date, comment) values (?, ?, ?)', [post_guid, formattedDate, comment]);
+    //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
+  }
+
+  static Future GetPostFeaturesCount(String post_guid) async {
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+        host: 'campussafetyapp.cra5btmlrrve.us-east-2.rds.amazonaws.com',
+        port: 3306,
+        user: 'admin',
+        db: 'Koi',
+        password: 'BangTanS13!'));
+
+    var now = new DateTime.now();
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formattedDate = formatter.format(now);
+    // Query the database using a parameterized query
+    await conn.query('select smiles, cries, comments, reports from Posts where post_guid=?',
+        [post_guid]);
+    
+    //'insert into users (name, email, age) values (?, ?, ?)', ['Bob', 'bob@bob.com', 25]
+  }
+
   //Add community to user!
   // static Future JoinCommunity(String user_guid, String community_guid) async {
   //   final conn = await MySqlConnection.connect(ConnectionSettings(

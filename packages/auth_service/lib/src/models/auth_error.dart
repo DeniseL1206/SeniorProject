@@ -4,7 +4,7 @@ enum AuthError {
   userNotFound,
   wrongPassword,
   emailAlreadyInUse,
-  invalidCredential,
+  //invalidCredential,
   operationNotAllowed,
   weakPassword,
   error,

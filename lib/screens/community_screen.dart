@@ -4,6 +4,9 @@ import 'dart:async';
 import 'package:mysql1/mysql1.dart';
 import 'package:seniorproject/utils/database_connection.dart';
 import 'package:seniorproject/screens/expanded_post_screen.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:intl/intl.dart';
+
 
 const List<String> list = <String>[
   'Hate speech or symbols',
@@ -686,7 +689,6 @@ class _Posts extends State<Posts> {
                           color: Colors.grey.withOpacity(0.2),
                           width: 1,
                         ),
-                        //borderRadius: const BorderRadius.all(Radius.circular(12)),
                       ),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -702,21 +704,27 @@ class _Posts extends State<Posts> {
                                     )),
                                 Padding(
                                     padding: EdgeInsets.fromLTRB(1, 11, 3, 3),
-                                    child: //Text(' r/ESSBL \n firstuser@utrgv.edu',
-                                        Text(
-                                            ' r/${element[2]} \n ${element[1]}',
-                                            style: TextStyle(fontSize: 15))),
+                                    child: 
+                                        AutoSizeText(
+                                      ' r/${element[2]} \n ${element[1]}',
+                                      style: TextStyle(fontSize: 13),
+                                      maxLines: 2,
+                                    )),
                                 Spacer(),
                                 Padding(
                                     padding: EdgeInsets.all(12.0),
-                                    child: //Text('2022-10-09'),
-                                        Text('${element[3]}')),
+                                    child: 
+                                        AutoSizeText(
+                                      '${DateFormat('yyyy-MM-dd').format(element[3])
+                                      }',
+                                      style: TextStyle(fontSize: 2),
+                                      maxLines: 1,
+                                    )),
                               ]),
                           ListTile(
-                              title: //Text('Excited about the new app!'),
+                              title: 
                                   Text('${element[4]}'),
-                              subtitle: //Text(
-                                  //'I am very happy that an application like this exists for the university. Definitely excited to implement this in my campus life.'),
+                              subtitle: 
                                   Text('${element[5]}')),
                           TextButton(
                             style: TextButton.styleFrom(primary: Colors.blue),
@@ -725,7 +733,7 @@ class _Posts extends State<Posts> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => ExpandedPostScreen()));
+                                        builder: (_) => ExpandedPostScreen("community")));
                               });
                             },
                             child: const Text('View More...'),
