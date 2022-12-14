@@ -3,7 +3,9 @@ import 'dart:async';
 
 class NotificationsScreen extends StatefulWidget {
   String userEmail = '';
-  NotificationsScreen(this.userEmail);
+  // String userName = "";
+  Widget userName;
+  NotificationsScreen(this.userEmail, this.userName);
 
   @override
   _NotificationsScreenState createState() => _NotificationsScreenState();
@@ -43,8 +45,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       ),
                     ]),
                 ListTile(
-                  title: Text('Someone smiled at your post', key: Key('notifications-text')),
-                  subtitle: Text('User abc enjoyed visiting your part of the pond'),
+                  title: Text('Someone smiled at your post',
+                      key: Key('notifications-text')),
+                  subtitle:
+                      Text('User abc enjoyed visiting your part of the pond'),
                 ),
               ],
             ),

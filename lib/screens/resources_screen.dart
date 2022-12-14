@@ -43,15 +43,16 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
         child: Scaffold(
           backgroundColor: Colors.white,
           appBar: AppBar(
-            leading: IconButton(
-                key: Key("back-button"),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-                icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
+            // leading: IconButton(
+            //     key: Key("back-button"),
+            //     onPressed: () {
+            //       setState(() {
+            //         Navigator.pop(context);
+            //       });
+            //     },
+            //     icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
             title: Text('Resources'),
+            centerTitle: true,
             backgroundColor: Color(0xFFFF9E80),
             elevation: 0,
             bottom: const TabBar(
@@ -73,8 +74,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                       for (var item in campusResources.entries)
                         Card(
                             child: ListTile(
-                                title: Text(
-                                  item.key),
+                                title: Text(item.key),
                                 trailing: Icon(Icons.link, color: Colors.grey),
                                 onTap: () async {
                                   String link = item.value;

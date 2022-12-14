@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
 import 'package:seniorproject/screens/sign_in_screen.dart';
 import 'package:seniorproject/screens/home_screen.dart';
 import 'package:seniorproject/screens/explore_screen.dart';
@@ -7,15 +9,14 @@ import 'package:seniorproject/screens/notifications_screen.dart';
 import 'package:seniorproject/screens/rating_system_screen.dart';
 import 'package:seniorproject/screens/resources_screen.dart';
 import 'package:seniorproject/screens/splash_screen.dart';
+import 'package:seniorproject/utils/database_connection.dart';
 
 import 'firebase_options.dart';
 
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  runApp(const MyApp());
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -43,8 +44,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-//Class to implement Navigation Bar That will direct to the different pages
-
 class BottomNavBar extends StatefulWidget {
   String userEmail = '';
   BottomNavBar(this.userEmail);
@@ -62,14 +61,50 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return email;
   }
 
+  late Future<Results> username;
+  late Widget user_name = Text("hi");
+
+  @override
+  void initState() {
+    super.initState();
+    username = DatabaseConnection.GetUsername(widget.userEmail);
+    user_name = buildUsername();
+    //user_name = username.toString();
+    //user_name = username[0];
+  }
+
+  Widget buildUsername() => FutureBuilder(
+      future: username,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          // If we got an error
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(
+                '${snapshot.error} occurred',
+                style: TextStyle(fontSize: 18),
+              ),
+            );
+          } else if (snapshot.hasData) {
+            final truePosts = snapshot.data as Results;
+            for (var element in truePosts) return Text('${element[0]}');
+          }
+        }
+        return Text("");
+      });
+
+  // void setUsername() {
+  //   user_name = buildUsername();
+  // }
+
   int _currentIndex = 0;
   late String email = returnEmail();
 
   late final List<Widget> _children = [
-    HomeScreen(email),
-    ExplorerScreen(),
+    HomeScreen(email, user_name),
+    ExplorerScreen(email, user_name),
     RatingSystemScreen(),
-    NotificationsScreen(email),
+    NotificationsScreen(email, user_name),
     ResourcesScreen()
   ];
 
