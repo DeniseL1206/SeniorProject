@@ -56,12 +56,7 @@ const List<String> list = <String>[
   'Rio Grande Center for Manufacturing',
   'Police and Parking & Transportation Offices',
   'Academic Support Facility',
-  'The Village A',
-  'The Village B',
-  'The Village C',
-  'The Village D',
-  'The Village E',
-  'The Village F',
+  'The Village A, B, C, D, E, F',
   'Environmental Health & Safety',
   'Thermal Storage Tank',
   'Lamar E',
@@ -72,11 +67,17 @@ const List<String> list = <String>[
   'ROTC Storage',
   'ROTC',
   'Baseball Stadium',
-  'Soccer and Track & Field Complex'
+  'Soccer and Track & Field Complex',
+  'Physical Science Portable',
+  'Interdisciplinary Engineering & Academic Building'
 ];
 
 class DropdownButtonExample extends StatefulWidget {
-  const DropdownButtonExample({key});
+  //const DropdownButtonExample({key});
+
+  String userEmail = '';
+  String userName = "";
+  DropdownButtonExample(this.userEmail, this.userName);
 
   @override
   State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
@@ -107,7 +108,8 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (_) => CommunityScreen(selectedCommunity)));
+                  builder: (_) => CommunityScreen(
+                      selectedCommunity, widget.userEmail, widget.userName)));
         });
       },
       items: list.map<DropdownMenuItem<String>>((String value) {
@@ -121,6 +123,11 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
 }
 
 class ExplorerScreen extends StatefulWidget {
+  String userEmail = '';
+  // String userName = "";
+  Widget userName;
+  ExplorerScreen(this.userEmail, this.userName);
+
   @override
   _ExplorerScreenState createState() => _ExplorerScreenState();
 }
@@ -150,10 +157,10 @@ class _ExplorerScreenState extends State<ExplorerScreen> {
         ),
         child: Align(
           alignment: Alignment.topCenter,
-          child: DropdownButtonExample(),
+          child: DropdownButtonExample(
+              widget.userEmail, widget.userName.toString()),
         ),
       ),
     );
   }
 }
-

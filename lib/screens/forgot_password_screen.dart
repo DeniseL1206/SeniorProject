@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seniorproject/screens/sign_in_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   @override
@@ -7,7 +8,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  String _email = '';
+  final emailController = TextEditingController();
   final auth = FirebaseAuth.instance;
 
   @override
@@ -30,6 +31,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 width: MediaQuery.of(context).size.width / 2,
                 child: TextField(
                   keyboardType: TextInputType.emailAddress,
+                  controller: emailController,
                   obscureText: true,
                   decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -46,12 +48,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   // decoration: const InputDecoration(
                   //   hintText: 'Password',
                   // ),
-
-                  onChanged: (value) {
-                    setState(() {
-                      _email = value.trim();
-                    });
-                  },
                 ),
               ),
             ),
@@ -59,10 +55,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  child: Text('Send Request'),
+                  child: Text('Reset Password'),
                   onPressed: () {
-                    auth.sendPasswordResetEmail(email: _email);
-                    Navigator.of(context).pop();
+                    resetPassword();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => SignInScreen()));
                   },
                   style: ElevatedButton.styleFrom(primary: Color(0xFFFF9E80)),
                 ),
@@ -72,5 +69,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
     );
+  }
+
+  Future resetPassword() async {
+    await FirebaseAuth.instance
+        .sendPasswordResetEmail(email: emailController.text.trim());
+
+    const snackBar = SnackBar(content: Text('Password Reset Email Sent'));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

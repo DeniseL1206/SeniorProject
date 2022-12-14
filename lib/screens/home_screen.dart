@@ -1,15 +1,20 @@
 //import 'dart:html';
 //import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:seniorproject/screens/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:mysql1/mysql1.dart';
+import 'package:seniorproject/services/local_notification_service.dart';
 import 'package:seniorproject/utils/database_connection.dart';
 import 'package:seniorproject/screens/expanded_post_screen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
+
+import '../main.dart';
 
 const List<String> reportTypes = <String>[
   'Hate speech or symbols',
@@ -74,12 +79,7 @@ const List<String> comms = <String>[
   'Rio Grande Center for Manufacturing',
   'Police and Parking & Transportation Offices',
   'Academic Support Facility',
-  'The Village A',
-  'The Village B',
-  'The Village C',
-  'The Village D',
-  'The Village E',
-  'The Village F',
+  'The Village A, B, C, D, E, F',
   'Environmental Health & Safety',
   'Thermal Storage Tank',
   'Lamar E',
@@ -90,7 +90,9 @@ const List<String> comms = <String>[
   'ROTC Storage',
   'ROTC',
   'Baseball Stadium',
-  'Soccer and Track & Field Complex'
+  'Soccer and Track & Field Complex',
+  'Physical Science Portable',
+  'Interdisciplinary Engineering & Academic Building'
 ];
 
 String postComm = '';
@@ -179,7 +181,9 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
 //Home Page
 class HomeScreen extends StatefulWidget {
   String userEmail = '';
-  HomeScreen(this.userEmail);
+  //String userName = "";
+  Widget userName;
+  HomeScreen(this.userEmail, this.userName);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -191,6 +195,21 @@ class _HomeScreenState extends State<HomeScreen> {
   // var postTitle = null;
   // var postDescription = null;
   final ScrollController _scrollController = ScrollController();
+
+  bool oldToNew = false;
+  bool newToOld = false;
+
+  late final LocalNotificationService service;
+
+  // late Future<Results> username;
+  // String user_name = "";
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   username = DatabaseConnection.GetUsername(widget.userEmail);
+  //   user_name = username.toString();
+  // }
 
   void _showDialogNewPost() {
     showDialog(
@@ -282,13 +301,27 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         child: TextButton(
                             style: TextButton.styleFrom(primary: Colors.white),
-                            onPressed: () {
-                              DatabaseConnection.InsertPost(
+                            onPressed: () async {
+                              await DatabaseConnection.InsertPost(
+                                  //widget.userName.toString(),
                                   widget.userEmail,
                                   postComm,
                                   postTitleTextController.text,
                                   postDescriptionTextController.text);
-                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          BottomNavBar(widget.userEmail)));
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (BuildContext context) =>
+                              //             this.widget));
+                              await service.showNotification(
+                                  id: 0,
+                                  title: 'You have a drop!',
+                                  body: 'Thank you for creating a new post.');
                             },
                             child: const Text("Post"))),
                   ),
@@ -299,6 +332,13 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  @override
+  void initState() {
+    service = LocalNotificationService();
+    service.initialize();
+    super.initState();
   }
 
   @override
@@ -356,9 +396,14 @@ class _HomeScreenState extends State<HomeScreen> {
             onSelected: (value) {
               // if value 1 show dialog
               if (value == 1) {
+                oldToNew = true;
+                //Posts(DatabaseConnection.GetPostOldtoNew(widget.userEmail));
                 //_showDialog();
+
                 // if value 2 show dialog
               } else if (value == 2) {
+                newToOld = true;
+                //Posts(DatabaseConnection.GetPostNewtoOld(widget.userEmail));
                 //_showDialog();
               }
             },
@@ -373,18 +418,19 @@ class _HomeScreenState extends State<HomeScreen> {
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const UserAccountsDrawerHeader(
+            UserAccountsDrawerHeader(
               decoration: BoxDecoration(
                 color: Color(0xFFFF9E80),
               ),
-              accountName: Text(
-                "Randomly Generated UserName",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              accountName: widget.userName,
+              // accountName: Text(
+              //   "${widget.userName.toString()}",
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //   ),
+              // ),
               accountEmail: Text(
-                "firstuser@utrgv.edu",
+                "${widget.userEmail}",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
@@ -396,10 +442,11 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: const Text('Sign Out'),
               onTap: () {
+                FirebaseAuth.instance.signOut(); //{
                 // Update the state of the app
                 // ...
                 // Then close the drawer
-                //Navigator.pop(context);
+                Navigator.pop(context);
                 Navigator.push(
                     context, MaterialPageRoute(builder: (_) => SignInScreen()));
               },
@@ -407,9 +454,9 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      body: Container(
-          color: Colors.deepOrange.shade50,
-          child: PostGeneration(widget.userEmail)),
+      body: Container(color: Colors.deepOrange.shade50, child: showWidget()),
+      //PostGeneration(widget.userEmail)),
+
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
@@ -423,6 +470,18 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Color(0xFFFF9E80),
       ),
     );
+  }
+
+  showWidget() {
+    if (oldToNew == true && newToOld == false) {
+      oldToNew = false;
+      return Posts(DatabaseConnection.GetPostOldtoNew(widget.userEmail));
+    } else if (newToOld == true && oldToNew == false) {
+      newToOld = false;
+      return Posts(DatabaseConnection.GetPostNewtoOld(widget.userEmail));
+    } else if (oldToNew == false && newToOld == false) {
+      return PostGeneration(widget.userEmail);
+    }
   }
 }
 
@@ -473,6 +532,12 @@ class _Posts extends State<Posts> {
                   style: TextStyle(fontSize: 18),
                 ),
               );
+            } else if (!snapshot.hasData) {
+              return Center(
+                  child: Text(
+                'You currently have no posts made.',
+                textAlign: TextAlign.center,
+              ));
             } else if (snapshot.hasData) {
               final truePosts = snapshot.data as Results;
 
@@ -501,28 +566,23 @@ class _Posts extends State<Posts> {
                                     )),
                                 Padding(
                                     padding: EdgeInsets.fromLTRB(1, 11, 3, 3),
-                                    child: 
-                                        AutoSizeText(
-                                      ' r/${element[2]} \n ${element[1]}',
+                                    child: AutoSizeText(
+                                      ' r/${element[3]} \n ${element[1]}',
                                       style: TextStyle(fontSize: 13),
                                       maxLines: 2,
                                     )),
                                 Spacer(),
                                 Padding(
                                     padding: EdgeInsets.all(12.0),
-                                    child: 
-                                        AutoSizeText(
-                                      '${DateFormat('yyyy-MM-dd').format(element[3])
-                                      }',
+                                    child: AutoSizeText(
+                                      '${DateFormat('yyyy-MM-dd').format(element[4])}',
                                       style: TextStyle(fontSize: 2),
                                       maxLines: 1,
                                     )),
                               ]),
                           ListTile(
-                              title: 
-                                  Text('${element[4]}'),
-                              subtitle: 
-                                  Text('${element[5]}')),
+                              title: Text('${element[5]}'),
+                              subtitle: Text('${element[6]}')),
                           TextButton(
                             style: TextButton.styleFrom(primary: Colors.blue),
                             onPressed: () {
@@ -530,7 +590,10 @@ class _Posts extends State<Posts> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => ExpandedPostScreen("home")));
+                                        builder: (_) => ExpandedPostScreen(
+                                            "home",
+                                            '${element[0]}',
+                                            '${element[1]}')));
                               });
                             },
                             child: const Text('View More...'),

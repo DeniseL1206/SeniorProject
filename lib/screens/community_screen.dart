@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'dart:async';
 import 'package:mysql1/mysql1.dart';
 import 'package:seniorproject/utils/database_connection.dart';
@@ -7,6 +8,8 @@ import 'package:seniorproject/screens/expanded_post_screen.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:intl/intl.dart';
 
+import '../main.dart';
+import '../services/local_notification_service.dart';
 
 const List<String> list = <String>[
   'Hate speech or symbols',
@@ -63,8 +66,10 @@ class _DropdownButtonExampleState extends State<DropdownButtonExample> {
 
 class CommunityScreen extends StatefulWidget {
   String selectedCommunity;
+  String userEmail = '';
+  String userName = "";
 
-  CommunityScreen(this.selectedCommunity);
+  CommunityScreen(this.selectedCommunity, this.userEmail, this.userName);
   @override
   _CommunityScreenState createState() => _CommunityScreenState();
 }
@@ -76,92 +81,10 @@ class _CommunityScreenState extends State<CommunityScreen> {
   var postDescription = null;
   final ScrollController _scrollController = ScrollController();
 
-  void _showDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0))),
-          contentPadding: EdgeInsets.only(top: 10.0),
-          content: Container(
-            width: 300.0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "New Post",
-                      style: TextStyle(fontSize: 24.0),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 65.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: const Icon(Icons.cancel_outlined),
-                            onPressed: () => Navigator.pop(context),
-                            color: Color(0xFFFF9E80),
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Divider(
-                  color: Colors.grey,
-                  height: 4.0,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Post Title",
-                      border: InputBorder.none,
-                    ),
-                    maxLines: 2,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: 30.0, right: 30.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Post Description",
-                      border: InputBorder.none,
-                    ),
-                    maxLines: 8,
-                  ),
-                ),
-                InkWell(
-                  child: Container(
-                      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                      decoration: BoxDecoration(
-                        color: Color(0xFFFF9E80),
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(32.0),
-                            bottomRight: Radius.circular(32.0)),
-                      ),
-                      child: TextButton(
-                          style: TextButton.styleFrom(primary: Colors.white),
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text("Post"))),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  late final LocalNotificationService service;
+
+  bool oldToNew = false;
+  bool newToOld = false;
 
   void _showDialogNewPost() {
     showDialog(
@@ -243,9 +166,27 @@ class _CommunityScreenState extends State<CommunityScreen> {
                         ),
                         child: TextButton(
                             style: TextButton.styleFrom(primary: Colors.white),
-                            onPressed: () {
-                              //DatabaseConnection.InsertPost(user_guid, community_guid, post);
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              await DatabaseConnection.InsertPost(
+                                  //widget.userName,
+                                  widget.userEmail,
+                                  widget.selectedCommunity,
+                                  postTitleTextController.text,
+                                  postDescriptionTextController.text);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          super.widget));
+                              // Navigator.pushReplacement(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (BuildContext context) =>
+                              //             super.widget));
+                              await service.showNotification(
+                                  id: 0,
+                                  title: 'You have a drop!',
+                                  body: 'Thank you for creating a new post.');
                             },
                             child: const Text("Post"))),
                   ),
@@ -385,7 +326,126 @@ class _CommunityScreenState extends State<CommunityScreen> {
     );
   }
 
+  double _rating = 0.0;
+  Widget buildRating() => RatingBar.builder(
+        initialRating: 3,
+        minRating: 1,
+        itemSize: 45,
+        itemPadding: EdgeInsets.symmetric(horizontal: 4),
+        itemBuilder: (context, _) => Icon(Icons.star, color: Colors.amber),
+        updateOnDrag: true,
+        onRatingUpdate: (rating) => setState(() {
+          this._rating = rating;
+        }),
+      );
+
+  // Rating System
+  void _showDialogRatingSystem() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          contentPadding: EdgeInsets.only(top: 10.0),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Container(
+              width: 320.0,
+              height: 295.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(
+                        "Rate Safety of Ripple",
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 65.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            IconButton(
+                              icon: const Icon(Icons.cancel_outlined),
+                              onPressed: () => Navigator.pop(context),
+                              color: Colors.amber,
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                    height: 4.0,
+                  ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 30, left: 30),
+                      child: buildRating()),
+                  // SizedBox(height: 20.0),
+                  // Text(
+                  //   'Rating: ${this._rating}',
+                  //   style: TextStyle(fontWeight: FontWeight.bold),
+                  // ),
+                  SizedBox(
+                    height: 57.0,
+                  ),
+                  InkWell(
+                    child: Container(
+                        padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(32.0),
+                              bottomRight: Radius.circular(32.0)),
+                        ),
+                        child: TextButton(
+                            style: TextButton.styleFrom(primary: Colors.white),
+                            onPressed: () async {
+                              // DatabaseConnection.RateCommunity();
+
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          super.widget));
+                              await service.showNotification(
+                                  id: 0,
+                                  title: 'You have a drop!',
+                                  body:
+                                      'Thank you for rating the ${widget.selectedCommunity} Ripple.');
+                            },
+                            child: const Text("Rate"))),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   bool selectedValue = false;
+
+  @override
+  void initState() {
+    service = LocalNotificationService();
+    service.initialize();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -399,13 +459,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 Navigator.pop(context);
               });
             },
-            icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFFFFFF))),
-        title: Padding(
-            padding: EdgeInsets.only(left: 100), child: Text('Community')),
-        backgroundColor: Color(0xFFFF9E80),
+            icon: Icon(Icons.arrow_back_ios, color: Color(0xFFFF9E80))),
+        // title: Text('${widget.selectedCommunity}'),
+        // centerTitle: true,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         actions: [
           PopupMenuButton<int>(
+            icon: Icon(Icons.more_vert, color: Color(0xFFFF9E80)),
             itemBuilder: (context) => [
               // PopupMenuItem 1
               PopupMenuItem(
@@ -459,8 +520,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 //_showDialog();
                 // if value 2 show dialog
               } else if (value == 2) {
+                oldToNew = true;
+                //Posts(DatabaseConnection.GetPostOldtoNew(widget.userEmail));
                 //_showDialog();
               } else if (value == 3) {
+                newToOld = true;
+                //Posts(DatabaseConnection.GetPostNewtoOld(widget.userEmail));
                 //_showDialog();
               }
             },
@@ -468,11 +533,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
         ],
       ),
       body: //SingleChildScrollView(
-        //controller: _scrollController,
-        //child: 
-        Column(
-          children: [
-            Card(
+          //controller: _scrollController,
+          //child:
+          Column(
+        children: [
+          Container(
+            height: 235,
+            color: Colors.deepOrange.shade50,
+            child: Card(
               elevation: 0,
               shape: RoundedRectangleBorder(
                 side: BorderSide(
@@ -492,17 +560,6 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             child: Text(
                                 "The ${widget.selectedCommunity} Ripple",
                                 style: TextStyle(fontSize: 17))),
-                        // Spacer(),
-                        // Padding(
-                        //   padding: EdgeInsets.all(12.0),
-                        //   child: ElevatedButton(
-                        //     style: ElevatedButton.styleFrom(
-                        //         primary: Color(0xFFFF9E80),
-                        //         minimumSize: Size(40, 20)),
-                        //     onPressed: () {},
-                        //     child: const Text('Join'),
-                        //   ),
-                        // ),
                       ]),
                   Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -513,10 +570,35 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             style: ElevatedButton.styleFrom(
                                 primary: Color(0xFFFF9E80),
                                 minimumSize: Size(40, 20)),
-                            onPressed: () {
+                            onPressed: () async {
+                              await service.showNotification(
+                                  id: 0,
+                                  title: 'You have a drop!',
+                                  body:
+                                      'Thank you for following the ${widget.selectedCommunity} Ripple.');
                               //DatabaseConnection.JoinCommunity(user_guid, community_guid);
                             },
-                            child: const Text('Join'),
+                            child: const Text('Follow'),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Color(0xFFFF9E80),
+                                minimumSize: Size(40, 20)),
+                            onPressed: () {
+                              _showDialogRatingSystem();
+                            },
+                            // onPressed: () async {
+                            //   await service.showNotification(
+                            //       id: 0,
+                            //       title: 'You have a drop!',
+                            //       body:
+                            //           'Thank you for rating the ${widget.selectedCommunity} Ripple.');
+                            //   //DatabaseConnection.JoinCommunity(user_guid, community_guid);
+                            // },
+                            child: const Text('Rate Safety'),
                           ),
                         ),
                       ]),
@@ -529,103 +611,40 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 ],
               ),
             ),
-
-             Container(
-              color: Colors.deepOrange.shade50,
-              child: PostGeneration(widget.selectedCommunity)
-
-              ),
-
-            // Card(
-            //   elevation: 0,
-            //   shape: RoundedRectangleBorder(
-            //     side: BorderSide(
-            //       color: Colors.grey.withOpacity(0.2),
-            //       width: 1,
-            //     ),
-            //     //borderRadius: const BorderRadius.all(Radius.circular(12)),
-            //   ),
-            //   child: Column(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: <Widget>[
-            //       Row(
-            //           crossAxisAlignment: CrossAxisAlignment.start,
-            //           children: <Widget>[
-            //             Padding(
-            //                 padding: EdgeInsets.all(12.0),
-            //                 child: CircleAvatar(
-            //                   backgroundImage:
-            //                       AssetImage('redwhitekoifishavatar.jpg'),
-            //                 )),
-            //             Padding(
-            //                 padding: EdgeInsets.fromLTRB(1, 11, 3, 3),
-            //                 child: Text(' r/ESSBL \n firstuser@utrgv.edu',
-            //                     style: TextStyle(fontSize: 15))),
-            //             Spacer(),
-            //             Padding(
-            //               padding: EdgeInsets.all(12.0),
-            //               child: Text('2022-10-09'),
-            //             ),
-            //           ]),
-            //       ListTile(
-            //         title: Text('Excited about the new app!'),
-            //         subtitle: Text(
-            //             'I am very happy that an application like this exists for the university. Definitely excited to implement this in my campus life.'),
-            //       ),
-            //       Row(
-            //         mainAxisAlignment: MainAxisAlignment.start,
-            //         children: <Widget>[
-            //           IconButton(
-            //             icon: Icon(Icons.sentiment_satisfied_alt_outlined),
-            //             onPressed: () {/* ... */},
-            //           ),
-            //           const SizedBox(width: 8),
-            //           IconButton(
-            //             icon: Icon(Icons.sentiment_dissatisfied_outlined),
-            //             onPressed: () {/* ... */},
-            //           ),
-            //           const SizedBox(width: 8),
-            //           IconButton(
-            //             icon: Icon(Icons.comment_outlined),
-            //             onPressed: () {/* ... */},
-            //           ),
-            //           const SizedBox(width: 8),
-            //           IconButton(
-            //             icon: Icon(Icons.report_gmailerrorred),
-            //             onPressed: () {
-            //               _showDialogReport();
-            //             },
-            //           ),
-            //         ],
-            //       ),
-            //     ],
-            //   ),
-            // )
-          ],
-        ),
-      //),
-
-      //   Container(
-      //    color: Colors.deepOrange.shade50,
-      //    child: ListView.builder(
-      //      itemCount: 1,
-      //      itemBuilder: (context, i) {
-      //        return Task();
-      //      },
-      //    ),
-      //  ),
+          ),
+          SizedBox(height: 5),
+          Expanded(
+            flex: 4,
+            child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(color: Colors.transparent)),
+                height: 100,
+                child: showWidget()),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           _showDialogNewPost();
-          //// Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (BuildContext context) => super.widget));
         },
         backgroundColor: Color(0xFFFF9E80),
       ),
     );
+  }
+
+  showWidget() {
+    if (oldToNew == true && newToOld == false) {
+      oldToNew = false;
+      return Posts(
+          DatabaseConnection.GetPostOldtoNew(widget.selectedCommunity));
+    } else if (newToOld == true && oldToNew == false) {
+      newToOld = false;
+      return Posts(
+          DatabaseConnection.GetPostNewtoOld(widget.selectedCommunity));
+    } else if (oldToNew == false && newToOld == false) {
+      return PostGeneration(widget.selectedCommunity);
+    }
   }
 }
 
@@ -676,6 +695,12 @@ class _Posts extends State<Posts> {
                   style: TextStyle(fontSize: 18),
                 ),
               );
+            } else if (!snapshot.hasData) {
+              return Center(
+                  child: Text(
+                'This community currently has no posts.',
+                textAlign: TextAlign.center,
+              ));
             } else if (snapshot.hasData) {
               final truePosts = snapshot.data as Results;
 
@@ -683,6 +708,8 @@ class _Posts extends State<Posts> {
                 children: [
                   for (var element in truePosts)
                     Card(
+                      color:
+                          Color.fromARGB(255, 223, 223, 223).withOpacity(0.2),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         side: BorderSide(
@@ -704,28 +731,23 @@ class _Posts extends State<Posts> {
                                     )),
                                 Padding(
                                     padding: EdgeInsets.fromLTRB(1, 11, 3, 3),
-                                    child: 
-                                        AutoSizeText(
-                                      ' r/${element[2]} \n ${element[1]}',
+                                    child: AutoSizeText(
+                                      ' r/${element[3]} \n ${element[1]}',
                                       style: TextStyle(fontSize: 13),
                                       maxLines: 2,
                                     )),
                                 Spacer(),
                                 Padding(
                                     padding: EdgeInsets.all(12.0),
-                                    child: 
-                                        AutoSizeText(
-                                      '${DateFormat('yyyy-MM-dd').format(element[3])
-                                      }',
+                                    child: AutoSizeText(
+                                      '${DateFormat('yyyy-MM-dd').format(element[4])}',
                                       style: TextStyle(fontSize: 2),
                                       maxLines: 1,
                                     )),
                               ]),
                           ListTile(
-                              title: 
-                                  Text('${element[4]}'),
-                              subtitle: 
-                                  Text('${element[5]}')),
+                              title: Text('${element[5]}'),
+                              subtitle: Text('${element[6]}')),
                           TextButton(
                             style: TextButton.styleFrom(primary: Colors.blue),
                             onPressed: () {
@@ -733,7 +755,10 @@ class _Posts extends State<Posts> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (_) => ExpandedPostScreen("community")));
+                                        builder: (_) => ExpandedPostScreen(
+                                            "community",
+                                            '${element[0]}',
+                                            '${element[1]}')));
                               });
                             },
                             child: const Text('View More...'),
