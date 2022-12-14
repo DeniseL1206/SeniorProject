@@ -122,46 +122,46 @@ void main() {
     },
   );
 
-  group('Sad Paths', () {
-    /*Given I am on the Login Screen
-    When I tap "Email"
-    And I enter "goob@gmail.com"
-    And I tap "Login"
-    Then I should remain on the Login Screen*/
-    test(
-        "An invalid utrgv email should not direct the user to another screen and user should remain on the login screen",
-        () async {
-      //backbutton to get back to main screen for test to implement properly
-      final backButton = find.byValueKey("back-button");
-      await driver.tap(backButton);
+  // group('Sad Paths', () {
+  //   /*Given I am on the Login Screen
+  //   When I tap "Email"
+  //   And I enter "goob@gmail.com"
+  //   And I tap "Login"
+  //   Then I should remain on the Login Screen*/
+  //   test(
+  //       "An invalid utrgv email should not direct the user to another screen and user should remain on the login screen",
+  //       () async {
+  //     //backbutton to get back to main screen for test to implement properly
+  //     final backButton = find.byValueKey("back-button");
+  //     await driver.tap(backButton);
 
-      final email_textfield = find.byValueKey("email-input");
-      await driver.tap(email_textfield);
-      await driver.enterText('goob@gmail.com');
-      await driver.waitFor(find.text('goob@gmail.com'));
+  //     final email_textfield = find.byValueKey("email-input");
+  //     await driver.tap(email_textfield);
+  //     await driver.enterText('goob@gmail.com');
+  //     await driver.waitFor(find.text('goob@gmail.com'));
 
-      final login_button = find.byValueKey("login-button");
-      await driver.tap(login_button);
+  //     final login_button = find.byValueKey("login-button");
+  //     await driver.tap(login_button);
 
-      await driver.tap(email_textfield);
-    });
-    /*Given I am on the Login Screen
-    When I tap "Email"
-    And I do not enter anything
-    And I tap "Login"
-    Then I should remain on the Login Screen*/
-    test(
-        "An invalid utrgv email should not direct the user to another screen and user should remain on the login screen",
-        () async {
-      final email_textfield = find.byValueKey("email-input");
-      await driver.tap(email_textfield);
+  //     await driver.tap(email_textfield);
+  //   });
+  //   /*Given I am on the Login Screen
+  //   When I tap "Email"
+  //   And I do not enter anything
+  //   And I tap "Login"
+  //   Then I should remain on the Login Screen*/
+  //   test(
+  //       "An invalid utrgv email should not direct the user to another screen and user should remain on the login screen",
+  //       () async {
+  //     final email_textfield = find.byValueKey("email-input");
+  //     await driver.tap(email_textfield);
 
-      final login_button = find.byValueKey("login-button");
-      await driver.tap(login_button);
+  //     final login_button = find.byValueKey("login-button");
+  //     await driver.tap(login_button);
 
-      await driver.tap(email_textfield);
-    });
-  });
+  //     await driver.tap(email_textfield);
+  //   });
+  // });
 
   // group('Back Buttons', () {
   //   test(

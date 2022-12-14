@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:seniorproject/screens/sign_in_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   @override
@@ -57,7 +58,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   child: Text('Reset Password'),
                   onPressed: () {
                     resetPassword();
-                    Navigator.of(context).pop();
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (_) => SignInScreen()));
                   },
                   style: ElevatedButton.styleFrom(primary: Color(0xFFFF9E80)),
                 ),
